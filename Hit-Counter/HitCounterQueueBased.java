@@ -1,36 +1,27 @@
-public class HitCounter {
-    private int[] times;
-    private int[] hits;
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class HitCounterQueueBased {
+    private Queue<Integer> queue;
     private final int WINDOW = 300;
 
-    public HitCounter() {
-        times = new int[WINDOW];
-        hits = new int[WINDOW];
+    public HitCounterQueueBased() {
+        queue = new LinkedList<>();
     }
 
     public void hit(int timestamp) {
-        int index = timestamp % WINDOW;
-
-        if (times[index] != timestamp) {
-            times[index] = timestamp;
-            hits[index] = 1;
-        } else {
-            hits[index]++;
-        }
+        queue.offer(timestamp);
     }
 
     public int getHits(int timestamp) {
-        int sum = 0;
-        for (int i = 0; i < WINDOW; i++) {
-            if (timestamp - times[i] < WINDOW) {
-                sum += hits[i];
-            }
+        while (!queue.isEmpty() && timestamp - queue.peek() >= WINDOW) {
+            queue.poll();
         }
-        return sum;
+        return queue.size();
     }
 
     public static void main(String[] args) {
-        HitCounter counter = new HitCounter();
+        HitCounterQueueBased counter = new HitCounterQueueBased();
 
         counter.hit(1);
         counter.hit(2);
@@ -51,4 +42,3 @@ public class HitCounter {
         System.out.println(counter.getHits(900));  
     }
 }
-
