@@ -1,62 +1,26 @@
 package Implementations.NotificationDispatcherSystem;
 
-import java.util.Scanner;
-
 import Implementations.NotificationDispatcherSystem.Enum.PriorityType;
-import Implementations.NotificationDispatcherSystem.NotificationInterface.EmailNotification;
+import Implementations.NotificationDispatcherSystem.NotificationDecorator.EncryptedNotification;
+import Implementations.NotificationDispatcherSystem.NotificationDecorator.LoggingNotification;
+import Implementations.NotificationDispatcherSystem.NotificationDecorator.PriorityNotification;
+import Implementations.NotificationDispatcherSystem.NotificationDecorator.RetryNotification;
+import Implementations.NotificationDispatcherSystem.NotificationFactory.NotificationFactory;
 import Implementations.NotificationDispatcherSystem.NotificationInterface.Notification;
-import Implementations.NotificationDispatcherSystem.NotificationInterface.SMSNotification;
 
 public class NDS {
-    public static void main(String arfs[]){
-        SimpleLogger logger = new SimpleLogger();
-        Scanner sc = new Scanner(System.in);
-        System.out.println("Welcome to Notification Service:");
-        System.out.println("Type the message you want to send:");
-        String message = sc.nextLine();
-        System.out.println("Whats the priority: ");
-        System.out.println("Please Choose the below Option:");
-        System.out.println("1.LOW");
-        System.out.println("2.MEDIUM");
-        System.out.println("3.HIGH");
 
-        int typeNumber = sc.nextInt();
-        sc.nextLine();
-        PriorityType pt = PriorityType.LOW;
-        if(typeNumber==1){
-            pt = PriorityType.LOW;
-        }
-        else if(typeNumber==2){
-            pt = PriorityType.MEDIUM;
-        }
-        else{
-            pt = PriorityType.HIGH;
-        }
+    public static void main(String[] args) {
 
-        System.out.println("Finally can you pass the receiver and what mode do you want to use");
-        System.out.println("Choose the Mode: ");
-        System.out.println("1.Email");
-        System.out.println("2.SMS");
+        Notification notification =
+                NotificationFactory.createNotification("email", "harsh@email.com", "Server Down!");
 
-        int notiType = sc.nextInt();
-        sc.nextLine();
+        // Dynamically add behaviors
+        notification = new PriorityNotification(notification, PriorityType.HIGH);
+        notification = new LoggingNotification(notification);
+        notification = new EncryptedNotification(notification);
+        notification = new RetryNotification(notification, 2);
 
-        Notification notification = null;
-        String email = "";
-        String number = "";
-        if(notiType==1){
-            System.out.println("Please Enter the receiver's email");
-            email = sc.nextLine();
-            notification = new EmailNotification(email, message, pt, logger);
-        }
-        else{
-            System.out.println("Please Enter the receiver's email");
-            number = sc.nextLine();
-            notification = new SMSNotification(number, message, pt, logger);
-        }
-
-        notification.notifier();
-
-        System.out.println("Thank you for using the logger service");
+        notification.send();
     }
 }

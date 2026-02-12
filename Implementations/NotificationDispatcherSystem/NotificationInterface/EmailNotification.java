@@ -1,25 +1,17 @@
 package Implementations.NotificationDispatcherSystem.NotificationInterface;
 
-import Implementations.NotificationDispatcherSystem.SimpleLogger;
-import Implementations.NotificationDispatcherSystem.Enum.PriorityType;
+public class EmailNotification implements Notification {
 
-public class EmailNotification extends Notification{
-
-    SimpleLogger logger;
     private final String receiver;
     private final String message;
-    private final PriorityType pt;
 
-    public EmailNotification(String receiver, String message, PriorityType pt, SimpleLogger logger){
+    public EmailNotification(String receiver, String message) {
         this.receiver = receiver;
         this.message = message;
-        this.pt = pt;
-        this.logger = logger;
-    } 
-
-    public void notifier(){
-        System.out.println("Sending " + message + " to " + receiver);
-        logger.log(message, receiver, pt);
     }
 
+    @Override
+    public void send() {
+        System.out.println("Sending Email to " + receiver + " : " + message);
+    }
 }
