@@ -38,8 +38,8 @@ public class TimeMapList {
             int mid = left + (right - left) / 2;
 
             if (list.get(mid).timestamp <= timestamp) {
-                result = list.get(mid).value;  // candidate
-                left = mid + 1;               // try to find larger valid
+                result = list.get(mid).value;
+                left = mid + 1;               
             } else {
                 right = mid - 1;
             }
